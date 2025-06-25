@@ -185,3 +185,24 @@ header h1 {
   text-align: center;
 }
 
+.themed-button {
+  background-color: #2ba1f0;
+  color: white;
+  font-weight: bold;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.3s ease;
+  box-shadow: 0 0 10px #2ba1f0;
+}
+
+.themed-button:hover {
+  background-color: #178cd6;
+  box-shadow: 0 0 15px #51caff, 0 0 25px #178cd6;
+}
+
+#printSection table th {
+  background-color: #2ba1f0;
+  color: white;
+}
