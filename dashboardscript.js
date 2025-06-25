@@ -120,7 +120,7 @@ localStorage.setItem("customerPhone", customerSearchInput.value);
 
     matches1.forEach(med => {
       const li = document.createElement("li");
-      li.textContent = `${med.Phone} - ${med.Name}`;
+      li.textContent = `${med.Phone} - ${med.Name} - ${med.Address}`;
       li.addEventListener("click", () => {
         searchInput1.value = li.textContent;
         suggestionsBox1.innerHTML = "";
@@ -215,3 +215,57 @@ function addToBillingTable(med) {
   // Optional: clear after restore
   localStorage.removeItem("currentBill");
 });
+
+
+function printBill() {
+  // Get customer info from search box
+  const raw = document.getElementById("customerSearch")?.value || "";
+  const [phone, name, address] = raw.split(" - ");
+
+  // Set customer info
+  document.getElementById("printPhone").textContent = phone || "N/A";
+  document.getElementById("printName").textContent = name || "N/A";
+  document.getElementById("printAddress").textContent = address || "N/A"; 
+
+  // Get bill table rows
+  const rows = document.querySelectorAll("#billTable tbody tr");
+  const tbody = document.getElementById("printTableBody");
+  tbody.innerHTML = "";
+  let total = 0;
+
+  rows.forEach(row => {
+    const id = row.cells[0].textContent;
+    const name = row.cells[1].textContent;
+    const price = row.cells[2].textContent.replace("₹", "");
+    const qtyEl = row.cells[3].querySelector("input");
+    const quantity = qtyEl ? qtyEl.value : row.cells[3].textContent;
+    const subtotal = qtyEl ? parseFloat(price) * parseInt(quantity || 0) : row.cells[4].textContent.replace("₹", "");
+
+    total += parseFloat(subtotal);
+
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${id}</td>
+      <td>${name}</td>
+      <td>₹${price}</td>
+      <td>${quantity}</td>
+      <td>₹${subtotal}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  document.getElementById("printTotal").textContent = total.toFixed(2);
+
+  // Open print view
+  const printContents = document.getElementById("printSection").innerHTML;
+  const win = window.open('', '', 'width=800,height=600');
+  win.document.write(`
+    <html>
+      <head><title>PharmaSys Invoice</title></head>
+      <body>${printContents}</body>
+    </html>
+  `);
+  win.document.close();
+  win.print();
+}
+
