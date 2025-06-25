@@ -45,7 +45,30 @@
     </section>
     <section class="customer">
       <div style="position: relative;">
-        <button onclick="generatePDF()">Download Bill as PDF</button>
+        <center><button onclick="printBill()" class="themed-button">Print Bill</button></center>
+        <div id="printSection" style="display:none; padding: 20px; font-family: Arial;">
+  <h2 style="text-align:center;">PharmaSys</h2>
+  <p style="text-align:center;">Pharmacist Dashboard Created by Aritra Palit</p>
+  <hr />
+
+  <h3>Customer Details</h3>
+  <p><strong>Phone:</strong> <span id="printPhone"></span></p>
+  <p><strong>Name:</strong> <span id="printName"></span></p>
+  <p><strong>Address:</strong> <span id="printAddress"></span></p>
+
+  <h3>Purchase Details</h3>
+  <table border="1" cellspacing="0" cellpadding="8" width="100%">
+    <thead>
+      <tr>
+        <th>ID</th><th>Name</th><th>Price</th><th>Qty</th><th>Subtotal</th>
+      </tr>
+    </thead>
+    <tbody id="printTableBody"></tbody>
+  </table>
+
+  <h3 style="text-align:right;">Total: ₹<span id="printTotal"></span></h3>
+</div>
+
       </div>
     </section>
   </div>
