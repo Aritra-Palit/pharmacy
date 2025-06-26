@@ -1,6 +1,8 @@
+//To store the login ID and Employee ID
 const name = localStorage.getItem("loggedInName");
 const empid = localStorage.getItem("loggedInEmpId");
 
+//If neither of them are present, redirect them to login page, even if loginid and password are correct
 if (!name || !empid) {
   window.location.href = "index.html";
 }
