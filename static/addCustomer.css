@@ -1,0 +1,53 @@
+.form-container {
+      width: 90%; /* Adjust as needed, 100% fills full parent */
+      max-width: 1000px; /* Prevent it from stretching too far on large screens */
+      margin: 40px auto;
+      background-color: #162032;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #2ba1f0;
+    }
+
+    .form-container h2 {
+      text-align: center;
+      color: #51caff;
+      margin-bottom: 25px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      color: #fff;
+      margin-bottom: 5px;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      height: 80px;
+    }
+
+    .form-group button {
+      width: 100%;
+      padding: 10px;
+      background-color: #2ba1f0;
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .form-group button:hover {
+      background-color: #178cd6;
+    }
