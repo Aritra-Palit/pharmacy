@@ -1,10 +1,8 @@
-//To store the login ID and Employee ID
 const name = localStorage.getItem("loggedInName");
 const empid = localStorage.getItem("loggedInEmpId");
 
-//If neither of them are present, redirect them to login page, even if loginid and password are correct
 if (!name || !empid) {
-  window.location.href = "index.html";
+  window.location.href = "/";
 }
 
 // Display welcome text
@@ -21,32 +19,41 @@ if (welcomeE2) {
 // Logout handler
 function logout() {
   localStorage.clear();
-  window.location.href = "index.html";
+  window.location.href = "/";
 }
 
 // Parse Excel-like dates
 function parseDate(val) {
   if (!val) return null;
-  if (typeof val === "number") return new Date(Date.UTC(1899, 11, 30) + val * 86400000);
-  if (typeof val === "string") {
+
+  // Excel date serial number
+  if (typeof val === "number") {
+    return new Date(Date.UTC(1899, 11, 30) + val * 86400000);
+  }
+
+  // Format: DD-MM-YYYY
+  if (typeof val === "string" && val.includes("-")) {
     const [day, month, year] = val.split("-");
     return new Date(`${year}-${month}-${day}`);
   }
-  return null;
+
+  // Fallback
+  const parsed = new Date(val);
+  return isNaN(parsed) ? null : parsed;
 }
 
 // Dashboard cards
 let medicines = [];
 let customers = [];
 
-fetch("master.xlsx")
-  .then(res => res.arrayBuffer())
-  .then(data => {
-    const workbook = XLSX.read(data, { type: "array" });
-    const sheet = workbook.Sheets["Medicines"];
-    medicines = XLSX.utils.sheet_to_json(sheet, { defval: "" });
-    const sheets = workbook.Sheets["Customer"];
-    customers = XLSX.utils.sheet_to_json(sheets, { defval: "" });
+async function loadDashboardData() {
+  try {
+    const [medRes, custRes] = await Promise.all([
+      fetch("/medicines"),
+      fetch("/customers")
+    ]);
+    medicines = await medRes.json();
+    customers = await custRes.json();
 
     const now = new Date();
 
@@ -55,28 +62,55 @@ fetch("master.xlsx")
 
     const recent = medicines.filter(med => {
       const addedDate = parseDate(med.dateAdded);
-      return (now - addedDate) / (1000 * 60 * 60 * 24) <= 7;
+      if (!addedDate) return false;
+      const daysDiff = Math.round((now - addedDate) / (1000 * 60 * 60 * 24));
+      return daysDiff <= 7;
     });
-
+    
     document.getElementById("newCount").textContent =
       `New Medicines Added: ${recent.length}`;
 
     const pending = medicines.filter(med => {
       const updatedDate = parseDate(med.lastUpdated);
-      return (now - updatedDate) / (1000 * 60 * 60 * 24) > 30;
+      if (!updatedDate) return false;  // Skip invalid or missing dates
+
+      const daysSinceUpdate = Math.floor((now - updatedDate) / (1000 * 60 * 60 * 24));
+
+      return daysSinceUpdate > 30;
     });
 
     document.getElementById("pendingCount").textContent =
       `Pending Updates: ${pending.length}`;
 
-    customerSearchBox();
-    setupSearchBox(); // ✅ Call after loading medicines
-    
-  });
+    customerSearchBox();   // You already updated this
+    setupSearchBox();      // If this is for medicine search, it stays
 
-function customerSearchBox() {
+  } catch (err) {
+    console.error("❌ Error loading dashboard data:", err);
+  }
+}
+
+function parseDate(dateStr) {
+  const parsed = new Date(dateStr);
+  return isNaN(parsed) ? new Date() : parsed;
+}
+
+document.addEventListener("DOMContentLoaded", loadDashboardData);
+
+
+async function customerSearchBox() {
   const searchInput1 = document.getElementById("customerSearch");
   const suggestionsBox1 = document.getElementById("customerSuggestions");
+
+  // Fetch customer data from server
+  let customers = [];
+  try {
+    const res = await fetch("/customers");
+    customers = await res.json();
+  } catch (err) {
+    console.error("Failed to load customers:", err);
+    return;
+  }
 
   searchInput1.addEventListener("input", () => {
     const value = searchInput1.value.toLowerCase().trim();
@@ -93,30 +127,24 @@ function customerSearchBox() {
       setTimeout(() => {
         const confirmAdd = confirm("Customer not found. Do you want to add them?");
         if (confirmAdd) {
-
-          // Store the phone number in localStorage for the add customer page
           const billRows = Array.from(document.querySelectorAll("#billTable tbody tr")).map(row => {
-          const qtyCell = row.cells[3];
-          const qtyInput = qtyCell.querySelector("input");
-          const quantity = qtyInput ? parseInt(qtyInput.value) : parseInt(qtyCell.textContent);
+            const qtyCell = row.cells[3];
+            const qtyInput = qtyCell.querySelector("input");
+            const quantity = qtyInput ? parseInt(qtyInput.value) : parseInt(qtyCell.textContent);
+            return {
+              id: row.cells[0].textContent,
+              name: row.cells[1].textContent,
+              price: parseFloat(row.cells[2].textContent),
+              quantity: quantity,
+              subtotal: parseFloat(row.cells[4].textContent)
+            };
+          });
 
-          return {
-            id: row.cells[0].textContent,
-            name: row.cells[1].textContent,
-            price: parseFloat(row.cells[2].textContent),
-            quantity: quantity,
-            subtotal: parseFloat(row.cells[4].textContent)
-  };
-});
-
-localStorage.setItem("currentBill", JSON.stringify(billRows));
-const customerSearchInput = document.getElementById("customerSearch");
-localStorage.setItem("customerPhone", customerSearchInput.value);
-
-          // Redirect to add customer page
-          window.location.href = "addCustomer.html";
+          localStorage.setItem("currentBill", JSON.stringify(billRows));
+          localStorage.setItem("customerPhone", searchInput1.value);
+          window.location.href = "/add-customer";  // updated route
         }
-      }, 300); // Slight delay for better UX
+      }, 300);
       return;
     }
 
@@ -124,7 +152,7 @@ localStorage.setItem("customerPhone", customerSearchInput.value);
       const li = document.createElement("li");
       li.textContent = `${med.Phone} - ${med.Name} - ${med.Address}`;
       li.addEventListener("click", () => {
-        searchInput1.value = li.textContent;
+        searchInput1.value = `${med.Phone} - ${med.Name} - ${med.Address}`;
         suggestionsBox1.innerHTML = "";
       });
       suggestionsBox1.appendChild(li);
@@ -145,7 +173,7 @@ function setupSearchBox() {
     if (!value) return;
 
     const matches = medicines
-      .filter(m => m.MedicineID?.toString().toLowerCase().startsWith(value))
+      .filter(m => m.MedicineID?.toString().toLowerCase().startsWith(value) && m.Quantity > 0)
       .slice(0, 5);
 
     matches.forEach(med => {
@@ -216,6 +244,8 @@ function addToBillingTable(med) {
 
   // Optional: clear after restore
   localStorage.removeItem("currentBill");
+  
+  
 });
 
 
@@ -238,12 +268,18 @@ function printBill() {
   rows.forEach(row => {
     const id = row.cells[0].textContent;
     const name = row.cells[1].textContent;
-    const price = row.cells[2].textContent.replace("₹", "");
+    const price = row.cells[2].textContent.replace("₹", "").trim();
     const qtyEl = row.cells[3].querySelector("input");
     const quantity = qtyEl ? qtyEl.value : row.cells[3].textContent;
-    const subtotal = qtyEl ? parseFloat(price) * parseInt(quantity || 0) : row.cells[4].textContent.replace("₹", "");
 
-    total += parseFloat(subtotal);
+    let subtotal = 0;
+    if (qtyEl) {
+      subtotal = parseFloat(price) * parseInt(quantity || "0");
+    } else {
+      subtotal = parseFloat(row.cells[4].textContent.replace("₹", "").trim() || "0");
+    }
+
+    total += subtotal;
 
     const tr = document.createElement("tr");
     tr.innerHTML = `
@@ -267,7 +303,53 @@ function printBill() {
       <body>${printContents}</body>
     </html>
   `);
-  win.document.close();
-  win.print();
-}
 
+  // Deduct stock
+  const soldItems = Array.from(rows).map(row => ({
+  id: row.cells[0].textContent,
+  quantity: parseInt(row.cells[3].querySelector("input")?.value || "0")
+  }));
+
+  
+  // Save bill
+  const products = Array.from(rows).map(row => ({
+  product: row.cells[1].textContent,
+  price: parseFloat(row.cells[2].textContent.replace("₹", "").trim()) *
+         parseInt(row.cells[3].querySelector("input")?.value || "0")
+  }));
+
+
+  const payload = {
+  userId: localStorage.getItem("loggedInEmpId"),
+  userName: localStorage.getItem("loggedInName"),
+  customerPhone: phone,
+  customerName: name,
+  customerAddress: address,
+  total_amount: total,
+  products: products,
+  items: soldItems    // ⬅️ Add soldItems to the same payload
+};
+
+
+  fetch("/process-bill", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(payload)
+})
+.then(res => {
+  if (res.ok) {
+      win.document.close();
+      win.print();
+      localStorage.removeItem("customerPhone");
+      window.location.href = '/dashboard';
+  } else {
+    alert("❌ Failed to process bill.");
+  }
+})
+.catch(err => {
+  console.error("❌ Error calling /process-bill:", err);
+  alert("❌ Internal error.");
+});
+
+  
+}
