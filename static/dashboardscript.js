@@ -71,13 +71,13 @@ async function loadDashboardData() {
       `New Medicines Added: ${recent.length}`;
 
     const pending = medicines.filter(med => {
-      const updatedDate = parseDate(med.lastUpdated);
-      if (!updatedDate) return false;  // Skip invalid or missing dates
+  const updateDate = parseDate(med.lastUpdated);
+  if (!updateDate) return false;
 
-      const daysSinceUpdate = Math.floor((now - updatedDate) / (1000 * 60 * 60 * 24));
+  const daysSinceUpdate = Math.floor((now - updateDate)/ (1000 * 60 * 60 * 24));
 
-      return daysSinceUpdate > 30;
-    });
+  return daysSinceUpdate > 30;
+});
 
     document.getElementById("pendingCount").textContent =
       `Pending Updates: ${pending.length}`;
@@ -88,11 +88,6 @@ async function loadDashboardData() {
   } catch (err) {
     console.error("❌ Error loading dashboard data:", err);
   }
-}
-
-function parseDate(dateStr) {
-  const parsed = new Date(dateStr);
-  return isNaN(parsed) ? new Date() : parsed;
 }
 
 document.addEventListener("DOMContentLoaded", loadDashboardData);
@@ -221,6 +216,35 @@ function addToBillingTable(med) {
   const phone = localStorage.getItem("customerPhone");
   const customerSearchInput1 = document.getElementById("customerSearch");
   customerSearchInput1.value = phone;
+  if (empid) {
+  const img = document.getElementById("profilePic");
+  const fallback = document.getElementById("fallbackAvatar");
+  const name = localStorage.getItem("loggedInName") || "User";
+
+  img.onerror = () => {
+    // Try JPG as fallback
+    img.onerror = () => {
+      // If JPG also fails, show initials
+      img.style.display = "none";
+      const initials = name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 3);
+      fallback.textContent = initials;
+      fallback.style.display = "inline-block";
+    };
+    img.src = `/static/profile_pics/${empid}.jpg`;
+  };
+
+  img.onload = () => {
+    img.style.display = "block";
+    fallback.style.display = "none";
+  };
+
+  // First attempt with PNG
+  img.src = `/static/profile_pics/${empid}.png`;
+}
+
+
+
+
   savedBill.forEach(item => {
     const row = document.querySelector("#billTable tbody").insertRow();
 
@@ -353,3 +377,5 @@ function printBill() {
 
   
 }
+
+
