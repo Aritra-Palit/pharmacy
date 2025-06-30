@@ -3,27 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <title>Pharmacy Dashboard</title>
-  <link rel="stylesheet" href="dashboardstyle.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='dashboardstyle.css') }}">
 </head>
 <body>
   <div class="sidebar">
     <h2>PharmaSys</h2>
     <ul>
-      <li><a href="#" id="Login">Login</a></li>
-      <li><a href="#" onclick="window.location.href = 'dashboard.html';">Pharmacist Dashboard</a></li>
-      <li><a href="#">Add Medicine</a></li>
-      <li><a href="#">View Medicine</a></li>
-      <li><a href="#">Update Medicine</a></li>
-      <li><a href="#">View Bill</a></li>
-      <li><a href="#" onclick="logout()">Logout</a></li>
-      <li><a href="#" onclick="logout()">Exit</a></li>
+      <li><a id="Login" onclick="window.location.href = '/my-profile';">Login</a></li>
+      <li><a onclick="window.location.href = '/dashboard';">Pharmacist Dashboard</a></li>
+      <li><a onclick="window.location.href = '/add-medicine';">Add Medicine</a></li>
+      <li><a onclick="window.location.href = '/view-medicine';">View Medicine</a></li>
+      <li><a onclick="window.location.href = '/view-bills';">View Bill</a></li>
+      <li><a onclick="logout()">Logout</a></li>
     </ul>
   </div>
 
   <div class="main">
+    <div class="welcome-container">
     <header>
       <h1 id="welcomeText">Welcome</h1>
     </header>
+    <img id="profilePic" src="" alt="Profile Picture" class="profile-image" style="display: none;">
+    <div id="fallbackAvatar" class="fallback-avatar"></div>
+    </div>
     <section class="cards">
         <div class="card" id="stockCount">Medicines in Stock: ...</div>
         <div class="card" id="newCount">New Medicines Added: ...</div>
@@ -87,10 +89,11 @@
 
 
 
-  <script src="dashboardscript.js"></script>
+
+  
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
+  <script src="{{ url_for('static', filename='dashboardscript.js') }}"></script>
 
 </body>
 </html>
