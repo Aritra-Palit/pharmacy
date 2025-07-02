@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Add Customer</title>
+  <!-- Correct use of url_for for local static files -->
   <link rel="stylesheet" href="{{ url_for('static', filename='dashboardstyle.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='addCustomer.css') }}">
 </head>
@@ -28,6 +29,7 @@
     </form>
   </div>
 
+  <!-- Correct script loading -->
   <script src="{{ url_for('static', filename='addCustomer.js') }}"></script>
 </body>
 </html>
