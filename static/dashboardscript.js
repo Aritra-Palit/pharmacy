@@ -1,7 +1,13 @@
 const name = localStorage.getItem("loggedInName");
 const empid = localStorage.getItem("loggedInEmpId");
+const empType = localStorage.getItem("loggedInEmpType");
 
 if (!name || !empid) {
+  window.location.href = "/";
+}
+
+if (empType !== "Employee") {
+  alert("❌ You do not have permission to access this page.");
   window.location.href = "/";
 }
 
@@ -197,17 +203,18 @@ function addToBillingTable(med) {
     <td>${med.Price}</td>
     <td><input type="number" value="${quantity}" min="1" class="qty-input"></td>
     <td class="subtotal">${subtotal}</td>
-    <td><button onclick="this.closest('tr').remove()">Remove</button></td>
+    <td><button onclick="this.closest('tr').remove(); updatePrintButtonLabel();">Remove</button></td>
   `;
-
   // Handle quantity changes
   row.querySelector(".qty-input").addEventListener("input", function () {
     const qty = parseInt(this.value);
     const newSubtotal = isNaN(qty) ? 0 : med.Price * qty;
     row.querySelector(".subtotal").textContent = newSubtotal;
+    updatePrintButtonLabel();
   });
 
   tbody.appendChild(row);
+  updatePrintButtonLabel();
 }
 
 
@@ -254,7 +261,7 @@ function addToBillingTable(med) {
       <td>${item.price}</td>
       <td><input type="number" value="${item.quantity}" min="1" class="qty-input" /></td>
       <td class="subtotal">${item.price * item.quantity}</td>
-      <td><button onclick="this.closest('tr').remove()">Remove</button></td>
+      <td><button onclick="this.closest('tr').remove(); updatePrintButtonLabel();">Remove</button></td>
     `;
 
     const qtyInput = row.querySelector(".qty-input");
@@ -263,6 +270,7 @@ function addToBillingTable(med) {
     qtyInput.addEventListener("input", () => {
       const qty = parseInt(qtyInput.value) || 0;
       subtotalCell.textContent = item.price * qty;
+      
     });
   });
 
@@ -378,4 +386,16 @@ function printBill() {
   
 }
 
+function updatePrintButtonLabel() {
+  let total = 0;
+  const rows = document.querySelectorAll("#billTable tbody tr");
+  rows.forEach(row => {
+    const price = parseFloat(row.cells[2].textContent) || 0;
+    const qtyInput = row.cells[3].querySelector("input");
+    const quantity = parseInt(qtyInput?.value || "0");
+    total += price * quantity;
+  });
 
+  const button = document.getElementById("printButton");
+  button.textContent = total > 0 ? `Print Bill (₹${total.toFixed(2)})` : "Print Bill";
+}
