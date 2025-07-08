@@ -1,1 +1,96 @@
+.form-container {
+  width: 90%;
+  max-width: 1000px;
+  margin: 40px auto;
+  background-color: #162032;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px #2ba1f0;
+  padding-bottom: 60px;
+  position: relative;
+}
 
+.form-container h2 {
+  text-align: center;
+  color: #51caff;
+  margin-bottom: 25px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  color: #fff;
+  margin-bottom: 5px;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+}
+
+.form-group button {
+  width: 100%;
+  padding: 10px;
+  background-color: #2ba1f0;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.form-group button:hover {
+  background-color: #178cd6;
+}
+
+.input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.suggestion-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  background-color: #1e2b3a;
+  border: 1px solid #444;
+  border-radius: 4px;
+  max-height: 150px;
+  overflow-y: auto;
+  position: absolute;
+  top: 100%;     /* directly below input */
+  left: 0;
+  width: 100%;   /* match input width */
+  z-index: 1000;
+}
+
+.suggestion-list li {
+  padding: 8px;
+  cursor: pointer;
+  color: #fff;
+}
+
+.suggestion-list li:hover {
+  background-color: #29415c;
+}
+
+.bottom-button-wrapper {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+}
+
+.bottom-button-wrapper button {
+  background-color: #2ba1f0;
+  color: white;
+  border: none;
+  padding: 6px 14px;
+  font-size: 13px;
+  border-radius: 4px;
+  cursor: pointer;
+}
