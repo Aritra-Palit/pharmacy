@@ -15,3 +15,20 @@ document.addEventListener("DOMContentLoaded", () => {
       method: "POST",
       body: formData
     });
+    if (response.ok) {
+      const data = await response.json();
+      alert("✅ Login successful");
+      localStorage.setItem("loggedInName", data.name);
+      localStorage.setItem("loggedInEmpId", data.employeeId);
+      localStorage.setItem("loggedInUsername", username);
+      localStorage.setItem("loggedInEmpType", data.EmpType);
+      if (data.EmpType == "Employee") {
+        window.location.href = "/dashboard";
+      } else {
+        window.location.href = "/";
+      }
+    } else {
+      alert("❌ Invalid login");
+    }
+  });
+});
