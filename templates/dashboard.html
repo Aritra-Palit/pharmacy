@@ -1,1 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Pharmacy Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='dashboardstyle.css') }}">
+</head>
+<body>
+  <div class="sidebar">
+    <h2>PharmaSys</h2>
+    <ul>
+      <li><a id="Login" onclick="window.location.href = '/my-profile';">Login</a></li>
+      <li><a onclick="window.location.href = '/dashboard';">Pharmacist Dashboard</a></li>
+      <li><a onclick="window.location.href = '/add-medicine';">Add Medicine</a></li>
+      <li><a onclick="window.location.href = '/view-medicine';">View Medicine</a></li>
+      <li><a onclick="window.location.href = '/view-bills';">View Bill</a></li>
+      <li><a onclick="logout()">Logout</a></li>
+    </ul>
+  </div>
 
+  <div class="main">
+    <div class="welcome-container">
+    <header>
+      <h1 id="welcomeText">Welcome</h1>
+    </header>
+    <img id="profilePic" src="" alt="Profile Picture" class="profile-image" style="display: none;">
+    <div id="fallbackAvatar" class="fallback-avatar"></div>
+    </div>
+    <section class="cards">
+        <div class="card" id="stockCount">Medicines in Stock: ...</div>
+        <div class="card" id="newCount">New Medicines Added: ...</div>
+        <div class="card" id="pendingCount">Pending Updates: ...</div>
+    </section>
+    <section class="billing">
+      <h2><center>Billing Area</center></h2>
+      <div style="position: relative;">
+        <input type="text" id="medicineSearch" placeholder="Enter Medicine Name..." autocomplete="off" />
+        <ul id="suggestions" class="suggestion-list"></ul>
+      </div>
+    </section>
+    <section class="customer">
+      <h2><center>Customer Details</center></h2>
+      <div style="position: relative;">
+        <input type="text" id="customerSearch" placeholder="Enter Customer Phone..." autocomplete="off" />
+        <ul id="customerSuggestions" class="suggestion-list"></ul>
+      </div>
+    </section>
+    <section class="customer">
+      <div style="position: relative;">
+        <center><button onclick="printBill()" class="themed-button" id="printButton">Print Bill</button></center>
+        <div id="printSection" style="display:none; padding: 20px; font-family: Arial;">
+  <h2 style="text-align:center;">PharmaSys</h2>
+  <p style="text-align:center;">Pharmacist Dashboard Created by Aritra Palit</p>
+  <hr />
+
+  <h3>Customer Details</h3>
+  <p><strong>Phone:</strong> <span id="printPhone"></span></p>
+  <p><strong>Name:</strong> <span id="printName"></span></p>
+  <p><strong>Address:</strong> <span id="printAddress"></span></p>
+
+  <h3>Purchase Details</h3>
+  <table border="1" cellspacing="0" cellpadding="8" width="100%">
+    <thead>
+      <tr>
+        <th>ID</th><th>Name</th><th>Price</th><th>Qty</th><th>Subtotal</th>
+      </tr>
+    </thead>
+    <tbody id="printTableBody"></tbody>
+  </table>
+
+  <h3 style="text-align:right;">Total: ₹<span id="printTotal"></span></h3>
+</div>
+
+      </div>
+    </section>
+  </div>
+
+<div class="billing-table-box">
+  <table id="billTable">
+    <thead>
+      <tr>
+        <th>ID</th><th>Name</th><th>Price</th><th>Quantity</th><th>Subtotal</th><th>Action</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="{{ url_for('static', filename='dashboardscript.js') }}"></script>
+
+</body>
+</html>
