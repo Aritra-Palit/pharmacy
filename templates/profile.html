@@ -1,1 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Profile</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='dashboardstyle.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='profile.css') }}">
+</head>
+<body>
+  <div class="profile-container">
+    <h2>Profile</h2>
 
+    <div class="form-group">
+      <label for="empId">Employee ID:</label>
+      <input type="text" id="empId" readonly />
+    </div>
+
+    <div class="form-group">
+      <label for="username">Username:</label>
+      <input type="text" id="username" />
+    </div>
+
+    <div class="form-group">
+      <label for="password">Password:</label>
+      <input type="password" id="password" />
+    </div>
+
+    <div class="form-group">
+      <label for="name">Full Name:</label>
+      <input type="text" id="name" />
+    </div>
+
+    <div class="form-group">
+      <label>Profile Picture:</label>
+      <input type="file" id="profileInput" />
+      <div class="pic-actions">
+        <button onclick="uploadProfile()">Upload</button>
+        <button onclick="viewProfile()">View</button>
+        <button onclick="deleteProfile()">Delete</button>
+      </div>
+      <img id="profilePic" class="profile-preview" style="display: none;" />
+    </div>
+
+    <div class="form-group">
+      <button onclick="saveProfile()">Save Profile</button>
+      <button onclick="window.location.href = '/dashboard';">Dashboard</button>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='profile.js') }}"></script>
+</body>
+</html>
