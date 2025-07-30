@@ -1,1 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>View Bills</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='dashboardstyle.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='viewBills.css') }}">
+</head>
+<body>
+    <div class="sidebar">
+    <h2>PharmaSys</h2>
+    <ul>
+      <li><a id="Login" onclick="window.location.href = '/my-profile';">Login</a></li>
+      <li><a onclick="window.location.href = '/dashboard';">Pharmacist Dashboard</a></li>
+      <li><a onclick="window.location.href = '/add-medicine';">Add Medicine</a></li>
+      <li><a onclick="window.location.href = '/view-medicine';">View Medicine</a></li>
+      <li><a onclick="window.location.href = '/view-bills';">View Bill</a></li>
+      <li><a onclick="logout()">Logout</a></li>
+    </ul>
+  </div>
+  <div class="view-container">
+    <h2>All Bills</h2>
+    <input type="text" id="billSearch" placeholder="Search by Customer Name or Product" />
 
+    <table id="billTable">
+      <thead>
+        <tr>
+          <th>Timestamp</th>
+          <th>User</th>
+          <th>Customer</th>
+          <th>Phone</th>
+          <th>Address</th>
+          <th>Total</th>
+          <th>Product</th>
+          <th>Price</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+
+  </div>
+
+  <script src="{{ url_for('static', filename='viewBills.js') }}"></script>
+</body>
+</html>
