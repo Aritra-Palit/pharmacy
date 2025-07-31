@@ -1,1 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>View Medicines</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='dashboardstyle.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='viewMedicine.css') }}">
+</head>
+<body>
+    <div class="sidebar">
+    <h2>PharmaSys</h2>
+    <ul>
+      <li><a id="Login" onclick="window.location.href = '/my-profile';">Login</a></li>
+      <li><a onclick="window.location.href = '/dashboard';">Pharmacist Dashboard</a></li>
+      <li><a onclick="window.location.href = '/add-medicine';">Add Medicine</a></li>
+      <li><a onclick="window.location.href = '/view-medicine';">View Medicine</a></li>
+      <li><a onclick="window.location.href = '/view-bills';">View Bill</a></li>
+      <li><a onclick="logout()">Logout</a></li>
+    </ul>
+  </div>
+  <div class="view-container">
+    <h2>All Medicines</h2>
 
+    <input type="text" id="searchBar" placeholder="Search by Medicine ID or Name" />
+
+    <table id="medicineTable">
+      <thead>
+        <tr>
+          <th>Medicine ID</th>
+          <th>Name</th>
+          <th>Quantity</th>
+          <th>Price (₹)</th>
+          <th>Date Added</th>
+          <th>Last Updated</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Filled dynamically -->
+      </tbody>
+    </table>
+    <div class="bottom-button-wrapper">
+    <button onclick="window.location.href = '/dashboard';">
+      Dashboard
+    </button>
+  </div>
+
+  
+  <script src="{{ url_for('static', filename='viewMedicine.js') }}"></script>
+</body>
+</html>
