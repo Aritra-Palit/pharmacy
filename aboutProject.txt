@@ -1,1 +1,1 @@
-
+This project is totally for small medicine retail outlet. The project has been developed keeping in mind, that not all devices come with high end specs. You may use it in your shop. All suggestions are always welcome.
